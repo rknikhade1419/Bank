@@ -1,167 +1,47 @@
-# Spring Boot Shopping Cart Web App
+Spring Boot Online Banking System
+About
+This is a robust Digital Banking Application built for practicing secure financial transactions using Spring Boot. It features a modern banking interface where users can manage accounts, view balances, and perform transactional transfers.
 
-## About
+Tech Stack:
 
-This is a demo project for practicing Spring + Thymeleaf. The idea was to build some basic shopping cart web app.
+Backend: Spring Boot, Spring Security (Role-based access)
 
-It was made using **Spring Boot**, **Spring Security**, **Thymeleaf**, **Spring Data JPA**, **Spring Data REST and Docker**. 
-Database is in memory **H2**.
+Frontend: Thymeleaf, Bootstrap
 
-There is a login and registration functionality included.
+Data: Spring Data JPA, H2 In-Memory Database
 
-Users can shop for products. Each user has his own shopping cart (session functionality).
-Checkout is transactional.
+DevOps: Docker, Maven
 
-## Configuration
+Features
+User Authentication: Secure Login/Registration for customers and bank staff.
 
-### Configuration Files
+Account Management: Automatic creation of Savings/Current accounts upon registration.
 
-Folder **src/resources/** contains config files for **shopping-cart** Spring Boot application.
+Transaction Engine: ACID-compliant fund transfers between accounts.
 
-* **src/resources/application.properties** - main configuration file. Here it is possible to change admin username/password,
-as well as change the port number.
+Security: Protection against CSRF and unauthorized access to account data.
 
-## How to run
+Configuration
+The core settings are located in src/main/resources/application.properties.
 
-There are several ways to run the application. You can run it from the command line with included Maven Wrapper, Maven or Docker. 
+Server Port: Defaulted to 8070.
 
-Once the app starts, go to the web browser and visit `http://localhost:8070/home`
+Admin Credentials: Configurable via properties for bank teller/manager access.
 
-Admin username: **admin**
+How to Run
+Using Maven
+Bash
 
-Admin password: **admin**
-
-User username: **user**
-
-User password: **password**
-
-### Maven Wrapper
-
-#### Using the Maven Plugin
-
-Go to the root folder of the application and type:
-```bash
-$ chmod +x scripts/mvnw
-$ scripts/mvnw spring-boot:run
-```
-
-#### Using Executable Jar
-
-Or you can build the JAR file with 
-```bash
-$ scripts/mvnw clean package
-``` 
-
-Then you can run the JAR file:
-```bash
-$ java -jar target/shopping-cart-0.0.1-SNAPSHOT.jar
-```
-
-### Maven
-
-Open a terminal and run the following commands to ensure that you have valid versions of Java and Maven installed:
-
-```bash
-$ java -version
-java version "1.8.0_102"
-Java(TM) SE Runtime Environment (build 1.8.0_102-b14)
-Java HotSpot(TM) 64-Bit Server VM (build 25.102-b14, mixed mode)
-```
-
-```bash
-$ mvn -v
-Apache Maven 3.3.9 (bb52d8502b132ec0a5a3f4c09453c07478323dc5; 2015-11-10T16:41:47+00:00)
-Maven home: /usr/local/Cellar/maven/3.3.9/libexec
-Java version: 1.8.0_102, vendor: Oracle Corporation
-```
-
-#### Using the Maven Plugin
-
-The Spring Boot Maven plugin includes a run goal that can be used to quickly compile and run your application. 
-Applications run in an exploded form, as they do in your IDE. 
-The following example shows a typical Maven command to run a Spring Boot application:
- 
-```bash
 $ mvn spring-boot:run
-``` 
+Using Docker
+Bash
 
-#### Using Executable Jar
+$ docker build -t bank-app:latest -f docker/Dockerfile .
+$ docker run -p 8070:8070 bank-app:latest
+Once started, access the portal at: http://localhost:8070/home
 
-To create an executable jar run:
+Default Credentials:
 
-```bash
-$ mvn clean package
-``` 
+Customer: user / password
 
-To run that application, use the java -jar command, as follows:
-
-```bash
-$ java -jar target/shopping-cart-0.0.1-SNAPSHOT.jar
-```
-
-To exit the application, press **ctrl-c**.
-
-### Docker
-
-It is possible to run **shopping-cart** using Docker:
-
-Build Docker image:
-```bash
-$ mvn clean package
-$ docker build -t shopping-cart:dev -f docker/Dockerfile .
-```
-
-Run Docker container:
-```bash
-$ docker run --rm -i -p 8070:8070 \
-      --name shopping-cart \
-      shopping-cart:dev
-```
-
-##### Helper script
-
-It is possible to run all of the above with helper script:
-
-```bash
-$ chmod +x scripts/run_docker.sh
-$ scripts/run_docker.sh
-```
-
-## Docker 
-
-Folder **docker** contains:
-
-* **docker/shopping-cart/Dockerfile** - Docker build file for executing shopping-cart Docker image. 
-Instructions to build artifacts, copy build artifacts to docker image and then run app on proper port with proper configuration file.
-
-## Util Scripts
-
-* **scripts/run_docker.sh.sh** - util script for running shopping-cart Docker container using **docker/Dockerfile**
-
-## Tests
-
-Tests can be run by executing following command from the root of the project:
-
-```bash
-$ mvn test
-```
-
-## Helper Tools
-
-### HAL REST Browser
-
-Go to the web browser and visit `http://localhost:8070/`
-
-You will need to be authenticated to be able to see this page.
-
-### H2 Database web interface
-
-Go to the web browser and visit `http://localhost:8070/h2-console`
-
-In field **JDBC URL** put 
-```
-jdbc:h2:mem:shopping_cart_db
-```
-
-In `/src/main/resources/application.properties` file it is possible to change both
-web interface url path, as well as the datasource url.
+Manager: admin / admin
