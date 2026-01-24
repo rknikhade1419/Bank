@@ -14,13 +14,14 @@ pipeline {
     stages {
         stage('git checkout') {
             steps {
-                git branch: 'master', url: 'https://github.com/ygminds73/Ekart.git'
+                // UPDATED: Points to your new Bank repository
+                git branch: 'main', url: 'https://github.com/rknikhade1419/Bank.git'
             }
         }
 
         stage('compile') {
             steps {
-                sh "mvn compile"
+                sh "mvn clean compile"
             }
         }
 
@@ -34,8 +35,8 @@ pipeline {
             steps {
                 withSonarQubeEnv('sonar-scanner') {
                     sh "${env.SCANNER_HOME}/bin/sonar-scanner \
-                        -Dsonar.projectKey=EKART \
-                        -Dsonar.projectName=EKART \
+                        -Dsonar.projectKey=BANK-SYSTEM \
+                        -Dsonar.projectName=BANK-SYSTEM \
                         -Dsonar.java.binaries=target/classes"
                 }
             }
@@ -68,7 +69,8 @@ pipeline {
         stage('build and Tag docker image') {
             steps {
                 script {
-                        sh "docker build -t youngminds73/ekart:latest -f docker/Dockerfile ."
+                        // UPDATED: Image name changed to banking-system
+                        sh "docker build -t youngminds73/banking-system:latest -f docker/Dockerfile ."
                     }
             }
         }
@@ -78,10 +80,12 @@ pipeline {
                 script{
                    withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
                    sh 'docker login -u youngminds73 -p ${dockerhubpwd}'}
-                   sh 'docker push youngminds73/ekart:latest'
+                   // UPDATED: Pushing the banking-system image
+                   sh 'docker push youngminds73/banking-system:latest'
                 }
             }
         }
+
         stage('EKS and Kubectl configuration'){
             steps{
                 script{
@@ -89,13 +93,14 @@ pipeline {
                 }
             }
         }
+
         stage('Deploy to k8s'){
             steps{
                 script{
+                    // This uses the deploymentservice.yml we updated earlier
                     sh 'kubectl apply -f deploymentservice.yml'
                 }
             }
         }
     }
-
 }
