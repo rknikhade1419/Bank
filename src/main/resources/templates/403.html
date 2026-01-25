@@ -10,10 +10,32 @@
 <div th:replace="/fragments/header :: navbar"/>
 
 <div class="container">
-    <div class="starter-template">
-        <h1>403 - Access is denied</h1>
-        <div th:inline="text">Hello '[[${#httpServletRequest.remoteUser}]]',
-            you do not have permission to access this page.
+    <div class="row" style="margin-top: 50px;">
+        <div class="col-md-8 col-md-offset-2 text-center">
+            <div class="panel panel-danger">
+                <div class="panel-heading">
+                    <h1 class="panel-title" style="font-size: 30px;">
+                        <span class="glyphicon glyphicon-lock"></span> Restricted Access
+                    </h1>
+                </div>
+                <div class="panel-body">
+                    <div class="starter-template">
+                        <h2>403 - Access Denied</h2>
+                        <hr/>
+                        <p class="lead" th:inline="text">
+                            Hello <strong>[[${#httpServletRequest.remoteUser}]]</strong>, 
+                            you do not have the required administrative permissions to access this secure banking resource.
+                        </p>
+                        <p class="text-muted">
+                            For security reasons, this attempt has been logged. If you believe this is an error, please contact your branch manager.
+                        </p>
+                        <br/>
+                        <a th:href="@{/home}" class="btn btn-danger btn-lg">
+                            <span class="glyphicon glyphicon-home"></span> Return to Safety
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
