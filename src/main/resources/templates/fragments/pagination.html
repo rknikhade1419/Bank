@@ -4,33 +4,34 @@
 <body>
 <div th:fragment="pagination">
 
-    <!-- Pagination -->
-    <div class="pagination" th:with="baseUrl=${URLparameter}">
+    <div class="pagination-container text-center" th:with="baseUrl=${URLparameter}">
+        <hr/>
         <span th:if="${pager.indexOutOfBounds()}">
-            Page is out of bounds. Go back to <a class="pageLink"
-                                                 th:href="@{${baseUrl}(page=1)}">Home</a>.
+            Navigation error. Please return to the <a class="btn btn-warning btn-xs"
+                                                 th:href="@{${baseUrl}(page=1)}">Primary Dashboard</a>.
         </span>
 
         <span th:unless="${pager.indexOutOfBounds()}">
 
             <span th:if="${pager.hasPrevious()}">
-                <a class="pageLink"
-                   th:href="@{${baseUrl}(page=1)}">&laquo; first</a>
-                <a class="pageLink"
-                   th:href="@{${baseUrl}(page=${pager.getPageIndex() - 1})}"> previous</a>
+                <a class="btn btn-default btn-sm"
+                   th:href="@{${baseUrl}(page=1)}">&laquo; First</a>
+                <a class="btn btn-default btn-sm"
+                   th:href="@{${baseUrl}(page=${pager.getPageIndex() - 1})}">Previous</a>
             </span>
 
-            <span th:if="${pager.getTotalPages() != 1}"
-                  th:text="'Page ' + ${pager.getPageIndex()} + ' of ' + ${pager.getTotalPages()} + '.'">
+            <span th:if="${pager.getTotalPages() != 1}" class="badge"
+                  th:text="'Statement Page ' + ${pager.getPageIndex()} + ' of ' + ${pager.getTotalPages()}">
             </span>
 
             <span th:if="${pager.hasNext()}">
-                <a class="pageLink"
-                   th:href="@{${baseUrl}(page=${pager.getPageIndex() + 1})}">next</a>
-                <a class="pageLink"
-                   th:href="@{${baseUrl}(page=${pager.getTotalPages()})}">last &raquo;</a>
+                <a class="btn btn-default btn-sm"
+                   th:href="@{${baseUrl}(page=${pager.getPageIndex() + 1})}">Next</a>
+                <a class="btn btn-default btn-sm"
+                   th:href="@{${baseUrl}(page=${pager.getTotalPages()})}">Last &raquo;</a>
             </span>
         </span>
+        <hr/>
     </div>
 
 </div>
