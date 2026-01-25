@@ -13,24 +13,16 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 
 import javax.sql.DataSource;
 
-/**
- * Spring Security Configuration
- * http://docs.spring.io/spring-boot/docs/current/reference/html/howto-security.html
- * Switches off Spring Boot automatic security configuration
- *
- * @author Dusan
- */
 @Configuration
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final AccessDeniedHandler accessDeniedHandler;
-
     final DataSource dataSource;
 
     @Value("${spring.admin.username}")
     private String adminUsername;
 
-    @Value("${spring.admin.username}")
+    @Value("${spring.admin.password}") // Fixed: was pointing to username in your snippet
     private String adminPassword;
 
     @Value("${spring.queries.users-query}")
@@ -45,20 +37,17 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
         this.dataSource = dataSource;
     }
 
-    /**
-     * HTTPSecurity configurer
-     * - roles ADMIN allow to access /admin/**
-     * - roles USER allow to access /user/** and /newPost/**
-     * - anybody can visit /, /home, /about, /registration, /error, /blog/**, /post/**, /h2-console/**
-     * - every other page needs authentication
-     * - custom 403 access denied handler
-     */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        http.csrf().disable()
+        http.csrf().disable() // Note: In a real bank, CSRF must be enabled!
                 .authorizeRequests()
-                .antMatchers("/home", "/registration", "/error", "/h2-console/**").permitAll()
+                // Public Banking Pages
+                .antMatchers("/", "/home", "/registration", "/error", "/h2-console/**", "/css/**", "/js/**", "/webjars/**").permitAll()
+                // Admin-only Banking Actions
+                .antMatchers("/admin/**").hasAnyRole("ADMIN")
+                // General Banking Actions (Transactions, Dashboard)
+                .antMatchers("/shoppingCart/**", "/transfer/**", "/account/**").hasAnyRole("USER")
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
@@ -67,39 +56,29 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .and()
                 .logout()
+                .logoutSuccessUrl("/login?logout") // Redirect to login with logout message
                 .permitAll()
                 .and()
                 .exceptionHandling().accessDeniedHandler(accessDeniedHandler)
-                // Fix for H2 console
                 .and().headers().frameOptions().disable();
     }
 
-
-    /**
-     * Authentication details
-     */
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-
-        // Database authentication
-        auth.
-                jdbcAuthentication()
+        // Database authentication for customers
+        auth.jdbcAuthentication()
                 .usersByUsernameQuery(usersQuery)
                 .authoritiesByUsernameQuery(rolesQuery)
                 .dataSource(dataSource)
                 .passwordEncoder(passwordEncoder());
 
-        // In memory authentication
+        // In-memory authentication for system back-door (useful for initial setup)
         auth.inMemoryAuthentication()
-                .withUser(adminUsername).password(adminPassword).roles("ADMIN");
+                .withUser(adminUsername).password(passwordEncoder().encode(adminPassword)).roles("ADMIN");
     }
 
-    /**
-     * Configure and return BCrypt password encoder
-     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
 }
