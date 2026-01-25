@@ -1,0 +1,41 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+
+<head>
+</head>
+
+<body>
+
+<div th:fragment="accounts">
+    <div class="panel panel-info" th:each="account : ${accounts}">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                <span class="glyphicon glyphicon-piggy-bank"></span> 
+                <span th:text="${account.accountType}">Savings Account</span>
+            </h3>
+        </div>
+        <div class="panel-body">
+            <h4 th:text="'Account Number: ' + ${account.accountNumber}">XXXX-XXXX-1234</h4>
+            <p class="text-muted" th:text="${account.description}">Standard Interest Savings</p>
+        </div>
+        <div class="row panel-footer">
+            <div th:inline="text" class="col-md-4">
+                <strong>Current Balance: $[[${account.balance}]]</strong>
+            </div>
+            <div th:inline="text" class="col-md-5">
+                Status: <span class="label label-success">Active</span>
+            </div>
+            
+            <a th:href="@{'/transfer?from={id}'(id=${account.id})}" class="col-md-3"
+               sec:authorize="isAuthenticated()">
+                <button type="button" class="btn btn-primary btn-sm">
+                    <span class="glyphicon glyphicon-new-window"></span> Transfer Funds
+                </button>
+            </a>
+        </div>
+        <br></br>
+    </div>
+</div>
+
+</body>
+</html>
