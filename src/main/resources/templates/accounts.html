@@ -13,33 +13,43 @@
 <div class="container">
 
     <h1 class="jumbotron">
+        <span class="glyphicon glyphicon-briefcase"></span> 
         <span sec:authentication="name"></span>'s Banking Dashboard
     </h1>
 
     <div class="alert alert-info" th:if="${transactionMessage}" th:utext="${transactionMessage}"></div>
 
-    <div class="panel-default well" th:each="account : ${accounts}">
+    <div class="panel panel-primary" th:each="account : ${accounts}">
         <div class="panel-heading">
-            <h1>
-                <a th:text="${account.accountType}" th:href="@{'/account/' + ${account.id}}">Account Type</a>
-            </h1>
-            <h3 th:text="'Account Number: ' + ${account.accountNumber}">Account Number</h3>
+            <h2 class="panel-title">
+                <span th:text="${account.accountType}">Account Type</span> - 
+                <span th:text="${account.accountNumber}">000000000</span>
+            </h2>
         </div>
-        <div class="row panel-body">
-            <div th:inline="text" class="col-md-6">Current Balance: $[[${account.balance}]]</div>
-            
-            <a th:href="@{'/transaction/history/{id}'(id=${account.id})}" class="col-md-6 text-right">
-                <button type="button" class="btn btn-primary">View Statement</button>
-            </a>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h3 th:inline="text">Available Balance: $[[${account.balance}]]</h3>
+                </div>
+                <div class="col-md-6 text-right">
+                    <a th:href="@{'/transaction/history/' + ${account.id}}" class="btn btn-default">
+                        <span class="glyphicon glyphicon-list-alt"></span> View Statement
+                    </a>
+                    <a th:href="@{'/transfer?from=' + ${account.id}}" class="btn btn-primary">
+                        <span class="glyphicon glyphicon-transfer"></span> Transfer
+                    </a>
+                </div>
+            </div>
         </div>
-        <br></br>
     </div>
 
-    <div class="row panel-body">
-        <h2 class="col-md-10" th:inline="text">Total Net Worth: $[[${totalBalance}]]</h2>
-        <a th:href="@{'/transfer'}" class="col-md-2">
-            <button type="button" class="btn btn-success btn-lg">Transfer Funds</button>
-        </a>
+    <div class="well">
+        <div class="row">
+            <h2 class="col-md-9" th:inline="text"><strong>Total Net Worth: $[[${totalBalance}]]</strong></h2>
+            <div class="col-md-3">
+                 <a th:href="@{'/home'}" class="btn btn-success btn-block btn-lg">Back to Accounts</a>
+            </div>
+        </div>
     </div>
 
 </div>
