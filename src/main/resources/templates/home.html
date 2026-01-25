@@ -11,7 +11,12 @@
 
 <div class="container">
 
-    <div th:replace="/fragments/products :: products"/>
+    <div class="jumbotron">
+        <h1>Welcome to Your Secure Banking Portal</h1>
+        <p>Manage your savings, track transactions, and transfer funds with ease.</p>
+    </div>
+
+    <div th:replace="/fragments/accounts :: accounts"/>
 
     <div th:replace="/fragments/pagination :: pagination(URLparameter='/home')"/>
 
