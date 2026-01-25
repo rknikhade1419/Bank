@@ -15,7 +15,7 @@ spec:
       containers:
         - name: banking-system
           # Update this to your own Docker Hub username/repository name
-          image: youngminds73/banking-system:latest 
+          image: rknikhade1419/banking-system:latest 
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8070 
