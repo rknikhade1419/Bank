@@ -1,46 +1,46 @@
 package com.reljicd.util;
 
-
-import com.reljicd.model.Product;
+import com.reljicd.model.Account;
 import org.springframework.data.domain.Page;
 
 /**
- * @author Dusan Raljic
+ * Utility class to handle pagination logic for the Banking UI.
+ * It wraps the Spring Data Page object to provide easy-to-use methods for Thymeleaf.
  */
 public class Pager {
 
-    private final Page<Product> products;
+    private final Page<Account> accounts;
 
-    public Pager(Page<Product> products) {
-        this.products = products;
+    public Pager(Page<Account> accounts) {
+        this.accounts = accounts;
     }
 
     public int getPageIndex() {
-        return products.getNumber() + 1;
+        // Spring pages are 0-based, but we display 1-based to users
+        return accounts.getNumber() + 1;
     }
 
     public int getPageSize() {
-        return products.getSize();
+        return accounts.getSize();
     }
 
     public boolean hasNext() {
-        return products.hasNext();
+        return accounts.hasNext();
     }
 
     public boolean hasPrevious() {
-        return products.hasPrevious();
+        return accounts.hasPrevious();
     }
 
     public int getTotalPages() {
-        return products.getTotalPages();
+        return accounts.getTotalPages();
     }
 
     public long getTotalElements() {
-        return products.getTotalElements();
+        return accounts.getTotalElements();
     }
 
     public boolean indexOutOfBounds() {
-        return this.getPageIndex() < 0 || this.getPageIndex() > this.getTotalElements();
+        return this.getPageIndex() < 0 || this.getPageIndex() > this.getTotalPages();
     }
-
 }
