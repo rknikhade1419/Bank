@@ -70,7 +70,7 @@ pipeline {
             steps {
                 script {
                         // UPDATED: Image name changed to banking-system
-                        sh "docker build -t youngminds73/banking-system:latest -f docker/Dockerfile ."
+                        sh "docker build -t rknikhade1419/banking-system:latest -f docker/Dockerfile ."
                     }
             }
         }
@@ -79,9 +79,9 @@ pipeline {
             steps{
                 script{
                    withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
-                   sh 'docker login -u youngminds73 -p ${dockerhubpwd}'}
+                   sh 'docker login -u rknikhade1419 -p ${dockerhubpwd}'}
                    // UPDATED: Pushing the banking-system image
-                   sh 'docker push youngminds73/banking-system:latest'
+                   sh 'docker push rknikhade1419/banking-system:latest'
                 }
             }
         }
