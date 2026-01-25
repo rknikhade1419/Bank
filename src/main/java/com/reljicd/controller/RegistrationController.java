@@ -11,6 +11,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 
+/**
+ * Controller to handle new Customer onboarding.
+ */
 @Controller
 public class RegistrationController {
 
@@ -33,15 +36,16 @@ public class RegistrationController {
     @RequestMapping(value = "/registration", method = RequestMethod.POST)
     public ModelAndView createNewUser(@Valid User user, BindingResult bindingResult) {
 
+        // Check for duplicate emails - vital for bank account security
         if (userService.findByEmail(user.getEmail()).isPresent()) {
-            bindingResult
-                    .rejectValue("email", "error.user",
-                            "There is already a user registered with the email provided");
+            bindingResult.rejectValue("email", "error.user",
+                            "There is already an account registered with this email address");
         }
+        
+        // Check for duplicate usernames
         if (userService.findByUsername(user.getUsername()).isPresent()) {
-            bindingResult
-                    .rejectValue("username", "error.user",
-                            "There is already a user registered with the username provided");
+            bindingResult.rejectValue("username", "error.user",
+                            "This username is already taken. Please choose another.");
         }
 
         ModelAndView modelAndView = new ModelAndView();
@@ -49,11 +53,12 @@ public class RegistrationController {
         if (bindingResult.hasErrors()) {
             modelAndView.setViewName("/registration");
         } else {
-            // Registration successful, save user
-            // Set user role to USER and set it as active
+            // Save user and assign ROLE_USER by default
             userService.saveUser(user);
 
-            modelAndView.addObject("successMessage", "User has been registered successfully");
+            // Updated message for a professional banking feel
+            modelAndView.addObject("successMessage", 
+                "Your secure banking account has been registered successfully. You may now log in.");
             modelAndView.addObject("user", new User());
             modelAndView.setViewName("/registration");
         }
