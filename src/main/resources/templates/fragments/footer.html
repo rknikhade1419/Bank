@@ -13,14 +13,24 @@
     <div class="container">
         <div class="row">
             <div class="col-sm-12 text-center">
-                <span sec:authorize="isAuthenticated()">
-                | Logged user: <span sec:authentication="name"></span> |
-                Roles: <span sec:authentication="principal.authorities"></span> |
-                <a th:href="@{/logout}">Sign Out</a>
-            </span>
+                <div th:if="${#authorization.expression('isAuthenticated()')}" class="well well-sm">
+                    <span class="glyphicon glyphicon-user"></span> 
+                    Logged user: <strong><span sec:authentication="name"></span></strong> 
+                    &nbsp;|&nbsp; 
+                    <span class="glyphicon glyphicon-eye-open"></span> 
+                    Access Level: <span sec:authentication="principal.authorities" class="label label-info"></span> 
+                    &nbsp;|&nbsp; 
+                    <a th:href="@{/logout}" class="btn btn-xs btn-danger">Secure Sign Out</a>
+                </div>
 
-                <div>
-                    <p class="text-center">&copy; 2017 Dusan Reljic</p>
+                <div style="margin-top: 20px;">
+                    <p class="text-muted">
+                        &copy; 2026 Secure Bank Inc. | 
+                        <span class="glyphicon glyphicon-lock"></span> Encrypted Session
+                    </p>
+                    <p class="small text-muted">
+                        This system is for authorized use only. Transactions are monitored for security purposes.
+                    </p>
                 </div>
 
             </div>
@@ -28,6 +38,7 @@
     </div>
 
     <script type="text/javascript"
+            th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"
             src="webjars/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
 </div>
