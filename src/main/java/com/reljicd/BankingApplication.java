@@ -4,9 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ShoppingCartApplication {
+public class BankingApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(ShoppingCartApplication.class, args);
+        // This starts the Spring Boot Banking Application
+        SpringApplication.run(BankingApplication.class, args);
     }
 }
