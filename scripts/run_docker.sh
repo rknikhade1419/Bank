@@ -1,18 +1,23 @@
 #!/usr/bin/env bash
 
-CONTAINER_NAME=spring-boot-shopping-cart
+# UPDATED: New container and image names
+CONTAINER_NAME=spring-boot-bank-app
 echo -e "\nSet docker container name as ${CONTAINER_NAME}\n"
+
 IMAGE_NAME=${CONTAINER_NAME}:dev
 echo -e "\nSet docker image name as ${IMAGE_NAME}\n"
+
 PORT=8070
 echo -e "Set docker image PORT to ${PORT}\n"
 
 echo -e "Create uber jar...\n"
-mvn clean package
+# Using the wrapper is safer for portability
+./mvnw clean package -DskipTests
 
-echo -e "\nStop running Docker containers with image tag ${CONTAINER_NAME}, and remove them...n"
-docker stop $(docker ps -a | grep ${CONTAINER_NAME} | awk '{print $1}')
-docker rm $(docker ps -a | grep ${CONTAINER_NAME} | awk '{print $1}')
+echo -e "\nStop running Docker containers with image tag ${CONTAINER_NAME}, and remove them...\n"
+# These lines stop and clean up any old versions of the bank app
+docker stop $(docker ps -a | grep ${CONTAINER_NAME} | awk '{print $1}') 2>/dev/null
+docker rm $(docker ps -a | grep ${CONTAINER_NAME} | awk '{print $1}') 2>/dev/null
 
 echo -e "\nDocker build image with name ${IMAGE_NAME}...\n"
 docker build -t ${IMAGE_NAME} -f docker/Dockerfile .
