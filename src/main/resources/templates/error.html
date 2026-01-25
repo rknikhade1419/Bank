@@ -9,10 +9,32 @@
 
 <div th:replace="/fragments/header :: navbar"/>
 
-<div class="container">
-    <h1 th:if="${errorMessage}" th:utext="${errorMessage}">Error java.lang.NullPointerException</h1>
-    <h1 th:if="!${errorMessage}">404 - Page does not exist</h1>
-    <a href="index.html" th:href="@{/home}">Back to Home Page</a>
+<div class="container text-center" style="margin-top: 50px;">
+    
+    <div class="well">
+        <h1 class="text-danger">
+            <span class="glyphicon glyphicon-exclamation-sign"></span> 
+            System Notification
+        </h1>
+        <hr/>
+        
+        <div th:if="${errorMessage}">
+            <h3>We encountered a temporary issue processing your request.</h3>
+            <p class="text-muted">Error Details: <span th:text="${errorMessage}">Error Info</span></p>
+        </div>
+        
+        <div th:if="!${errorMessage}">
+            <h3>404 - Secure Page Not Found</h3>
+            <p>The banking resource you are looking for may have moved or is temporarily unavailable.</p>
+        </div>
+
+        <br/>
+        <p>If this persists, please contact our support team.</p>
+        <hr/>
+        <a href="index.html" th:href="@{/home}" class="btn btn-primary btn-lg">
+            Return to Dashboard
+        </a>
+    </div>
 </div>
 
 <div th:replace="/fragments/footer :: footer"/>
