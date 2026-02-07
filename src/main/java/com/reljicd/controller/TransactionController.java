@@ -1,6 +1,7 @@
 package com.reljicd.controller;
 
 import com.reljicd.exception.InsufficientFundsException;
+import com.reljicd.model.Account;
 import com.reljicd.service.AccountService;
 import com.reljicd.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.Optional;
 
 @Controller
 public class TransactionController {
@@ -23,7 +26,7 @@ public class TransactionController {
 
     @GetMapping("/dashboard")
     public ModelAndView showDashboard() {
-        ModelAndView modelAndView = new ModelAndView("/shoppingCart"); // Reusing your dashboard template
+        ModelAndView modelAndView = new ModelAndView("/shoppingCart");
         modelAndView.addObject("accounts", transactionService.getAccountsInSummary());
         modelAndView.addObject("totalBalance", transactionService.getTotalNetWorth().toString());
         return modelAndView;
@@ -31,7 +34,9 @@ public class TransactionController {
 
     @GetMapping("/transfer/add/{accountId}")
     public ModelAndView prepareTransfer(@PathVariable("accountId") Long accountId) {
-        accountService.findById(accountId).ifPresent(transactionService::selectAccountForTransfer);
+        // FIXED: Use findAccountById which returns Optional<Account>
+        Optional<Account> accountOpt = accountService.findAccountById(accountId);
+        accountOpt.ifPresent(transactionService::selectAccountForTransfer);
         return showDashboard();
     }
 
