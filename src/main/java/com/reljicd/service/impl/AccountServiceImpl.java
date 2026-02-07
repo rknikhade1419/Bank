@@ -1,60 +1,60 @@
 package com.reljicd.service.impl;
 
+import com.reljicd.exception.InsufficientFundsException;
 import com.reljicd.model.Account;
 import com.reljicd.repository.AccountRepository;
-import com.reljicd.service.AccountService;
+import com.reljicd.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.WebApplicationContext;
 
-import java.util.List;
-import java.util.Optional;
+import java.math.BigDecimal;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
+@Scope(value = WebApplicationContext.SCOPE_SESSION, proxyMode = ScopedProxyMode.TARGET_CLASS)
 @Transactional
-public class AccountServiceImpl implements AccountService {
+public class TransactionServiceImpl implements TransactionService {
 
     private final AccountRepository accountRepository;
+    
+    private Map<Account, Integer> accountsInTransfer = new HashMap<>();
 
     @Autowired
-    public AccountServiceImpl(AccountRepository accountRepository) {
+    public TransactionServiceImpl(AccountRepository accountRepository) {
         this.accountRepository = accountRepository;
     }
 
     @Override
-    public List<Account> findAllAccounts() {
-        return accountRepository.findAll();
+    public Map<Account, Integer> getAccountsInSummary() {
+        return Collections.unmodifiableMap(accountsInTransfer);
     }
 
     @Override
-    public Optional<Account> findAccountById(Long id) {
-        return accountRepository.findById(id);
+    public void selectAccountForTransfer(Account account) {
+        if (accountsInTransfer.containsKey(account)) {
+            accountsInTransfer.replace(account, accountsInTransfer.get(account) + 1);
+        } else {
+            accountsInTransfer.put(account, 1);
+        }
     }
 
     @Override
-    public Optional<Account> findAccountByAccountNumber(String accountNumber) {
-        return accountRepository.findByAccountNumber(accountNumber);
+    public void executeTransfer() throws InsufficientFundsException {
+        // Simple transfer logic - you can enhance this
+        accountsInTransfer.clear();
     }
 
     @Override
-    public Account saveAccount(Account account) {
-        return accountRepository.save(account);
-    }
-
-    @Override
-    public void deleteAccount(Long id) {
-        accountRepository.deleteById(id);
-    }
-
-    @Override
-    public Account findById(Long id) {
-        return accountRepository.findById(id).orElse(null);
-    }
-
-    @Override
-    public Page<Account> findAllAccountsPageable(Pageable pageable) {
-        return accountRepository.findAll(pageable);
+    public BigDecimal getTotalNetWorth() {
+        return accountsInTransfer.entrySet().stream()
+                .map(entry -> entry.getKey().getBalance().multiply(BigDecimal.valueOf(entry.getValue())))
+                .reduce(BigDecimal::add)
+                .orElse(BigDecimal.ZERO);
     }
 }
