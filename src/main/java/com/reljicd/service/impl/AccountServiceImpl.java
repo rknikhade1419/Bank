@@ -30,7 +30,9 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Optional<Account> findAccountById(Long id) {
-        return accountRepository.findById(id);
+        // Spring Boot 1.5.x uses findOne() instead of findById()
+        Account account = accountRepository.findOne(id);
+        return Optional.ofNullable(account);
     }
 
     @Override
@@ -45,12 +47,14 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public void deleteAccount(Long id) {
-        accountRepository.deleteById(id);
+        // Spring Boot 1.5.x uses delete(Long id) instead of deleteById(Long id)
+        accountRepository.delete(id);
     }
 
     @Override
     public Account findById(Long id) {
-        return accountRepository.findById(id).orElse(null);
+        // Spring Boot 1.5.x uses findOne() instead of findById()
+        return accountRepository.findOne(id);
     }
 
     @Override
