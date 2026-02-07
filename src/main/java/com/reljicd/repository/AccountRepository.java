@@ -12,4 +12,11 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     Optional<Account> findByAccountNumber(String accountNumber);
     
     boolean existsByAccountNumber(String accountNumber);
+    
+    // Explicitly declare these methods
+    @Override
+    Optional<Account> findById(Long id);
+    
+    @Override
+    void deleteById(Long id);
 }
